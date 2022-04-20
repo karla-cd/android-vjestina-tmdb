@@ -13,4 +13,7 @@
     <dimen name="heart_height">25dp</dimen>
     <dimen name="heart_width">25dp</dimen>
     <dimen name="heart_circle">3dp</dimen>
+    <dimen name="title_left_padding">20dp</dimen>
+    <dimen name="title_top_padding">180dp</dimen>
+    <dimen name="title_size">40sp</dimen>
 </resources>

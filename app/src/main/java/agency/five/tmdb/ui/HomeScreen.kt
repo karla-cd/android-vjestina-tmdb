@@ -78,7 +78,8 @@ fun HomeScreen() {
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        bottomBar = { BottomBar() }
     ) {
         LazyColumn() {
             item { ImageHeader() }
@@ -232,6 +233,27 @@ fun TypeList(typeList : List<String>) {
         items(typeList) {
             Text(text = it, modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)))
         }
+    }
+}
+
+@Composable
+fun BottomBar() {
+    BottomNavigation(
+        elevation = 12.dp,
+        backgroundColor = Color.White
+    ) {
+        BottomNavigationItem(icon = {
+            Image(painter = painterResource(id = R.drawable.home),"")
+        },
+            label = { Text(text = "Home") },
+            selected = true,
+            onClick = {})
+        BottomNavigationItem(icon = {
+            Image(painter = painterResource(id = R.drawable.heart),"")
+        },
+            label = { Text(text = "Favorites") },
+            selected = true,
+            onClick = {})
     }
 }
 
