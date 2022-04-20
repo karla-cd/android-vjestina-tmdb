@@ -1,28 +1,31 @@
 package agency.five.tmdb.ui
 
+import agency.five.tmdb.R
+import agency.five.tmdb.ui.theme.BlueTitle
 import agency.five.tmdb.ui.theme.TmdbTheme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import agency.five.tmdb.R
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.*
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import coil.compose.rememberImagePainter
 
 
@@ -75,14 +78,10 @@ fun HomeScreen() {
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Android Vjestina", color = MaterialTheme.colors.onPrimary) }
-            )
-        }
+        scaffoldState = scaffoldState
     ) {
         LazyColumn() {
+            item { ImageHeader() }
             item { SearchField() }
             item { Title("What's popular") }
             item { TypeList(typeList = typeList1) }
@@ -97,13 +96,33 @@ fun HomeScreen() {
     }
 }
 
+@Composable
+fun ImageHeader() {
+    Column(
+        modifier = Modifier
+            .background(BlueTitle)
+            .padding(dimensionResource(id = R.dimen.logo_padding))
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
 
+    ) {
+        Image(painter = painterResource(id = R.drawable.tmdblogo), contentDescription = "", modifier = Modifier
+            .height(dimensionResource(id = R.dimen.logo_height))
+            .width(dimensionResource(id = R.dimen.logo_width)))
+    }
+}
 
 @Composable
 fun SearchField() {
     val text = "Search"
     TextField(
-        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.search_spacing), vertical = dimensionResource(id = R.dimen.search_spacing)),
+        modifier = Modifier
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.search_spacing),
+                vertical = dimensionResource(id = R.dimen.search_spacing)
+            )
+            .fillMaxWidth(),
         value = text,
         onValueChange = {},
         shape = RoundedCornerShape(12.dp),
@@ -119,7 +138,14 @@ fun SearchField() {
                     tint = Color.Blue
                 )
             }
-        }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.DarkGray,
+            disabledTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
 
@@ -150,19 +176,33 @@ fun MovieCard(
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.small_spacing))),
             contentScale = ContentScale.Crop
         )
-        /*
-        FavoriteButton(
-            modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.small_spacing),
-                top = dimensionResource(id = R.dimen.small_spacing)
-            )
-        )*/
-
+        FavoriteButton()
     }
 }
 
 @Composable
-private fun MoviesList(
+fun FavoriteButton() {
+    Surface(modifier = Modifier
+        .padding(
+            start = dimensionResource(id = R.dimen.small_spacing),
+            top = dimensionResource(id = R.dimen.small_spacing)
+        ), color = Color.Transparent) {
+        Image(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "",
+            modifier = Modifier
+                .width(
+                    dimensionResource(id = R.dimen.heart_height)
+                )
+                .height(dimensionResource(id = R.dimen.heart_width))
+                .background(BlueTitle, CircleShape)
+                .padding(dimensionResource(id = R.dimen.heart_circle))
+        )
+    }
+}
+
+@Composable
+fun MoviesList(
     modifier: Modifier = Modifier,
     onMovieItemClick: (MovieItemViewState) -> Unit = {},
     movieItems: List<MovieItemViewState>
@@ -183,7 +223,7 @@ private fun MoviesList(
 
 @Composable
 fun Title(title : String) {
-    Text(text = title, modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)))
+    Text(text = title, color = BlueTitle, modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)))
 }
 
 @Composable
@@ -195,10 +235,11 @@ fun TypeList(typeList : List<String>) {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     TmdbTheme {
-        SearchField()
+        FavoriteButton()
     }
-}
+}*/

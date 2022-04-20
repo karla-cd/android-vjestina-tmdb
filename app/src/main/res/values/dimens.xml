@@ -7,4 +7,10 @@
     <dimen name="micro_spacing">8dp</dimen>
     <dimen name="macro_spacing">10dp</dimen>
     <dimen name="search_spacing">10dp</dimen>
+    <dimen name="logo_height">70dp</dimen>
+    <dimen name="logo_width">220dp</dimen>
+    <dimen name="logo_padding">10dp</dimen>
+    <dimen name="heart_height">25dp</dimen>
+    <dimen name="heart_width">25dp</dimen>
+    <dimen name="heart_circle">3dp</dimen>
 </resources>

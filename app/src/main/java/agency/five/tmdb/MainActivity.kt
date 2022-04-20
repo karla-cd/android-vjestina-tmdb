@@ -1,5 +1,7 @@
 package agency.five.tmdb
 
+import agency.five.tmdb.ui.DetailsScreen
+import agency.five.tmdb.ui.FavoritesScreen
 import agency.five.tmdb.ui.HomeScreen
 import agency.five.tmdb.ui.Router
 import agency.five.tmdb.ui.Screen
@@ -8,9 +10,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import agency.five.tmdb.ui.theme.TmdbTheme
 import androidx.compose.material.ExperimentalMaterialApi
 
@@ -25,6 +24,8 @@ class MainActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colors.background) {
                     when (Router.currentScreen) {
                         Screen.HomeScreen -> HomeScreen()
+                        Screen.FavoritesScreen -> FavoritesScreen()
+                        Screen.DetailsScreen -> DetailsScreen()
                     }
                 }
             }
