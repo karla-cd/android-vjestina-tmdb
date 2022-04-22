@@ -255,7 +255,12 @@ fun MovieCard(
                     width = dimensionResource(id = R.dimen.movie_card_width),
                     height = dimensionResource(id = R.dimen.movie_card_height)
                 )
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(
+                    onClick = {
+                        Router.navigateTo(Screen.DetailsScreen)
+                    }
+                ),
             contentScale = ContentScale.Crop
         )
         FavoriteButton(item)
