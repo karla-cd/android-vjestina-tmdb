@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="movie_card_width">130dp</dimen>
-    <dimen name="movie_card_height">160dp</dimen>
+    <dimen name="movie_card_width">122dp</dimen>
+    <dimen name="movie_card_height">179dp</dimen>
     <dimen name="small_spacing">8dp</dimen>
-    <dimen name="home_movies_list_content_padding">20dp</dimen>
-    <dimen name="micro_spacing">8dp</dimen>
-    <dimen name="macro_spacing">10dp</dimen>
-    <dimen name="search_spacing">10dp</dimen>
+    <dimen name="home_movies_list_content_padding_horizontal">1dp</dimen>
+    <dimen name="home_movies_list_content_padding_vertical">5dp</dimen>
+    <dimen name="home_movies_list_padding">10dp</dimen>
+    <dimen name="horizontal_spacing">20dp</dimen>
+    <dimen name="vertical_spacing">5dp</dimen>
+    <dimen name="search_spacing">20dp</dimen>
+    <dimen name="search_size">25dp</dimen>
     <dimen name="logo_height">70dp</dimen>
     <dimen name="logo_width">220dp</dimen>
-    <dimen name="logo_padding">10dp</dimen>
-    <dimen name="heart_height">25dp</dimen>
-    <dimen name="heart_width">25dp</dimen>
-    <dimen name="heart_circle">3dp</dimen>
+    <dimen name="logo_padding">2dp</dimen>
+    <dimen name="heart_size">40dp</dimen>
+    <dimen name="heart_circle">10dp</dimen>
     <dimen name="title_left_padding">20dp</dimen>
     <dimen name="title_top_padding">180dp</dimen>
     <dimen name="title_size">40sp</dimen>

@@ -2,7 +2,6 @@ package agency.five.tmdb.ui
 
 import agency.five.tmdb.R
 import agency.five.tmdb.ui.theme.BlueTitle
-import agency.five.tmdb.ui.theme.TmdbTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,19 +11,17 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 
@@ -60,19 +57,62 @@ fun HomeScreen() {
 
     var typeList1 by remember {
         mutableStateOf(
-            listOf("Streaming", "On TV", "For Rent", "In theaters")
+            listOf(
+                MovieGroup(
+                    id = 1,
+                    title = "Streaming",
+                    marked = true
+                ),
+                MovieGroup(
+                    id = 2,
+                    title = "On TV",
+                    marked = false
+                ),
+                MovieGroup(
+                    id = 3,
+                    title = "For Rent",
+                    marked = false
+                ),
+                MovieGroup(
+                    id = 4,
+                    title = "In theaters",
+                    marked = false
+                )
+            )
         )
     }
 
     var typeList2 by remember {
         mutableStateOf(
-            listOf("Movies", "TV")
+            listOf(
+                MovieGroup(
+                    id = 1,
+                    title = "Movies",
+                    marked = true
+                ),
+                MovieGroup(
+                    id = 2,
+                    title = "TV",
+                    marked = false
+                )
+            )
         )
     }
 
     var typeList3 by remember {
         mutableStateOf(
-            listOf("Today", "This week")
+            listOf(
+                MovieGroup(
+                    id = 1,
+                    title = "Today",
+                    marked = true
+                ),
+                MovieGroup(
+                    id = 2,
+                    title = "This week",
+                    marked = false
+                )
+            )
         )
     }
 
@@ -93,6 +133,7 @@ fun HomeScreen() {
             item { Title(title = "Trending") }
             item { TypeList(typeList = typeList3) }
             item { MoviesList(movieItems = movieItems) }
+            item { BottomBarSpacer() }
         }
     }
 }
@@ -108,15 +149,17 @@ fun ImageHeader() {
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
-        Image(painter = painterResource(id = R.drawable.tmdblogo), contentDescription = "", modifier = Modifier
-            .height(dimensionResource(id = R.dimen.logo_height))
-            .width(dimensionResource(id = R.dimen.logo_width)))
+        Image(painter = painterResource(id = R.drawable.tmdblogo),
+            contentDescription = "",
+            modifier = Modifier
+                .height(dimensionResource(id = R.dimen.logo_height))
+                .width(dimensionResource(id = R.dimen.logo_width)))
     }
 }
 
 @Composable
 fun SearchField() {
-    val text = "Search"
+    var text : String by remember { mutableStateOf("") }
     TextField(
         modifier = Modifier
             .padding(
@@ -125,29 +168,67 @@ fun SearchField() {
             )
             .fillMaxWidth(),
         value = text,
-        onValueChange = {},
+        placeholder = { Text("Search", style = MaterialTheme.typography.body1) },
+        onValueChange = { text = it },
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
         leadingIcon = {
             IconButton(
-                modifier = Modifier.alpha(ContentAlpha.medium),
                 onClick = {}
             ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "search icon",
-                    tint = Color.Blue
+                Image(
+                    painter = painterResource(id = R.drawable.search),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(dimensionResource(id = R.dimen.search_size))
+                        .height(dimensionResource(id = R.dimen.search_size))
                 )
             }
         },
         colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.DarkGray,
+            textColor = Color.Gray,
             disabledTextColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
         )
     )
+}
+
+@Composable
+fun Title(title : String) {
+    Text(text = title,
+        color = BlueTitle,
+        modifier = Modifier.padding(
+            horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+            vertical = dimensionResource(id = R.dimen.vertical_spacing)
+        ),
+        style = MaterialTheme.typography.h1
+    )
+}
+
+data class MovieGroup(
+    val id: Int,
+    val title: String,
+    val marked : Boolean
+)
+
+fun markAnotherItem(typeList : List<MovieGroup>, id : Int) {}
+
+@Composable
+fun TypeList(typeList : List<MovieGroup>) {
+    LazyRow() {
+        items(typeList) {
+            ClickableText(text = AnnotatedString(it.title),
+                onClick = {},
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+                    vertical = dimensionResource(id = R.dimen.vertical_spacing)
+                ),
+                style = MaterialTheme.typography.body1
+            )
+        }
+    }
 }
 
 data class MovieItemViewState(
@@ -174,47 +255,68 @@ fun MovieCard(
                     width = dimensionResource(id = R.dimen.movie_card_width),
                     height = dimensionResource(id = R.dimen.movie_card_height)
                 )
-                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.small_spacing))),
+                .clip(RoundedCornerShape(12.dp)),
             contentScale = ContentScale.Crop
         )
-        FavoriteButton()
+        FavoriteButton(item)
     }
 }
 
+// val favoritesList : MutableList<MovieItemViewState> by remember { mutableListOf<MovieItemViewState>() }
+
 @Composable
-fun FavoriteButton() {
+fun FavoriteButton(movie : MovieItemViewState) {
+    var hello : Boolean by remember { mutableStateOf(false) }
+
     Surface(modifier = Modifier
         .padding(
             start = dimensionResource(id = R.dimen.small_spacing),
             top = dimensionResource(id = R.dimen.small_spacing)
-        ), color = Color.Transparent) {
+        ),
+        color = Color.Transparent
+    ) {
         Image(
-            painter = painterResource(id = R.drawable.heart),
+            painter = if(hello) {
+                painterResource(id = R.drawable.full_heart)
+            } else {
+                painterResource(id = R.drawable.heart)
+            },
             contentDescription = "",
             modifier = Modifier
-                .width(
-                    dimensionResource(id = R.dimen.heart_height)
-                )
-                .height(dimensionResource(id = R.dimen.heart_width))
-                .background(BlueTitle, CircleShape)
+                .size(dimensionResource(id = R.dimen.heart_size))
+                .background(BlueTitle.copy(alpha = 0.7f), CircleShape)
                 .padding(dimensionResource(id = R.dimen.heart_circle))
+                .clickable(
+                    onClick = {
+                        hello = !hello
+                        // favoritesList.add(movie)
+                    }
+                )
         )
     }
 }
 
 @Composable
 fun MoviesList(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.padding(
+        horizontal = dimensionResource(id = R.dimen.home_movies_list_padding)
+    ),
     onMovieItemClick: (MovieItemViewState) -> Unit = {},
     movieItems: List<MovieItemViewState>
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.home_movies_list_content_padding))
+        contentPadding = PaddingValues(
+            //horizontal = dimensionResource(id = R.dimen.home_movies_list_content_padding_horizontal),
+            vertical = dimensionResource(id = R.dimen.home_movies_list_content_padding_vertical)
+        )
     ) {
         items(movieItems) {
             MovieCard(
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)),
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+                    vertical = dimensionResource(id = R.dimen.vertical_spacing)
+                ),
                 item = it,
                 onMovieItemClick = {}
             )
@@ -223,38 +325,45 @@ fun MoviesList(
 }
 
 @Composable
-fun Title(title : String) {
-    Text(text = title, color = BlueTitle, modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)))
-}
-
-@Composable
-fun TypeList(typeList : List<String>) {
-    LazyRow() {
-        items(typeList) {
-            Text(text = it, modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.micro_spacing), vertical = dimensionResource(id = R.dimen.macro_spacing)))
-        }
-    }
-}
-
-@Composable
 fun BottomBar() {
+    var home : Boolean by remember { mutableStateOf(true) }
     BottomNavigation(
         elevation = 12.dp,
         backgroundColor = Color.White
     ) {
         BottomNavigationItem(icon = {
-            Image(painter = painterResource(id = R.drawable.home),"")
+            Image(painter = if (home) painterResource(id = R.drawable.marked_home) else painterResource(id = R.drawable.home),
+                "")
         },
             label = { Text(text = "Home") },
             selected = true,
-            onClick = {})
+            onClick = {
+                home = true
+                Router.navigateTo(Screen.HomeScreen)
+            }
+        )
         BottomNavigationItem(icon = {
-            Image(painter = painterResource(id = R.drawable.heart),"")
+            Image(painter = if (home) painterResource(id = R.drawable.favorites) else painterResource(id = R.drawable.marked_favorites),
+                "")
         },
             label = { Text(text = "Favorites") },
-            selected = true,
-            onClick = {})
+            selected = false,
+            onClick = {
+                home = false
+                Router.navigateTo(Screen.FavoritesScreen)
+            }
+        )
     }
+}
+
+@Composable
+fun BottomBarSpacer() {
+    Spacer(modifier = Modifier
+        .padding(20.dp)
+        .height(10.dp)
+        .fillMaxWidth()
+        .background(Color.White)
+    )
 }
 
 /*

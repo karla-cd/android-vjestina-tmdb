@@ -11,9 +11,14 @@ import androidx.compose.ui.unit.sp
 // Set of Material typography styles to start with
 val Typography = Typography(
         body1 = TextStyle(
-                fontFamily = FontFamily(Font(R.font.quicksand_bold)),
+                fontFamily = FontFamily(Font(R.font.quicksand_regular)),
                 fontWeight = FontWeight.Normal,
-                fontSize = 18.sp
+                fontSize = 20.sp
+        ),
+        h1 = TextStyle(
+                fontFamily = FontFamily(Font(R.font.quicksand_bold)),
+                fontWeight = FontWeight.Bold,
+                fontSize = 25.sp
         )
         /* Other default text styles to override
     button = TextStyle(
@@ -28,7 +33,11 @@ val Typography = Typography(
     )
     */
 )
-
+/*
 private val QuickSand = FontFamily(
-        Font(R.font.quicksand_bold)
-)
+        Font(R.font.quicksand_light),
+        Font(R.font.quicksand_bold),
+        Font(R.font.quicksand_regular),
+        Font(R.font.quicksand_medium),
+        Font(R.font.quicksand_semibold)
+)*/

@@ -5,9 +5,17 @@ import agency.five.tmdb.ui.TypeList
 import agency.five.tmdb.ui.MovieItemViewState
 import agency.five.tmdb.ui.MovieCard
 import agency.five.tmdb.ui.MoviesList
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 @ExperimentalMaterialApi
 @Composable
@@ -41,13 +49,16 @@ fun FavoritesScreen() {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Android Vjestina", color = MaterialTheme.colors.onPrimary) }
-            )
-        }
+        bottomBar = { BottomBar() }
     ) {
         LazyColumn() {
+            item { ImageHeader() }
+            item {
+                Spacer(modifier = Modifier
+                    .height(20.dp)
+                    .fillMaxWidth()
+                    .background(Color.White)
+                ) }
             item { Title("Favorites") }
             item { MoviesList(movieItems = movieItems) }
         }

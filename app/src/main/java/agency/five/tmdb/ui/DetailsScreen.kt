@@ -76,10 +76,9 @@ fun StarButton() {
             painter = painterResource(id = R.drawable.star),
             contentDescription = "",
             modifier = Modifier
-                .width(
-                    dimensionResource(id = R.dimen.heart_height)
-                )
-                .height(dimensionResource(id = R.dimen.heart_width))
+                //.width(dimensionResource(id = R.dimen.heart_height))
+                //.height(dimensionResource(id = R.dimen.heart_width))
+                .size(dimensionResource(id = R.dimen.heart_size))
                 .background(BlueTitle, CircleShape)
                 .padding(dimensionResource(id = R.dimen.heart_circle))
         )
