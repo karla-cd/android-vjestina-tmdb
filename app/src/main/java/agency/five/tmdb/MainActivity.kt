@@ -1,10 +1,6 @@
 package agency.five.tmdb
 
-import agency.five.tmdb.ui.DetailsScreen
-import agency.five.tmdb.ui.FavoritesScreen
-import agency.five.tmdb.ui.HomeScreen
-import agency.five.tmdb.ui.Router
-import agency.five.tmdb.ui.Screen
+import agency.five.tmdb.ui.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import agency.five.tmdb.ui.theme.TmdbTheme
 import androidx.compose.material.ExperimentalMaterialApi
+import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
 
@@ -20,6 +17,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TmdbTheme {
+                startKoin {
+                    modules(moviesViewModelModule, moviesViewModelModule)
+                }
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     when (Router.currentScreen) {

@@ -23,8 +23,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
+val moviesViewModelModule = module {
+    viewModel {
+        HomeViewModel()
+    }
+}
 
 @ExperimentalMaterialApi
 @Composable
@@ -33,19 +41,19 @@ fun HomeScreen() {
     var movieItems by remember {
         mutableStateOf(
             listOf(
-                MovieItemViewState(
+                MovieItem(
                     id = 1,
                     title = "The Shawshank Redemption",
                     overview = "Overview",
                     imageUrl = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_UX128_CR0,3,128,176_AL_.jpg"
                 ),
-                MovieItemViewState(
+                MovieItem(
                     id = 2,
                     title = "The Godfather",
                     overview = "Overview",
                     imageUrl = "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UX128_CR0,1,128,176_AL_.jpg"
                 ),
-                MovieItemViewState(
+                MovieItem(
                     id = 3,
                     title = "The Dark Knight",
                     overview = "Overview",
@@ -231,7 +239,7 @@ fun TypeList(typeList : List<MovieGroup>) {
     }
 }
 
-data class MovieItemViewState(
+data class MovieItem(
     val id: Int,
     val title: String,
     val overview: String,
@@ -242,7 +250,7 @@ data class MovieItemViewState(
 fun MovieCard(
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
-    item: MovieItemViewState
+    item: MovieItem
 ) {
     Box(
         modifier = modifier.clickable { onMovieItemClick() }
@@ -270,7 +278,7 @@ fun MovieCard(
 // val favoritesList : MutableList<MovieItemViewState> by remember { mutableListOf<MovieItemViewState>() }
 
 @Composable
-fun FavoriteButton(movie : MovieItemViewState) {
+fun FavoriteButton(movie : MovieItem) {
     var hello : Boolean by remember { mutableStateOf(false) }
 
     Surface(modifier = Modifier
@@ -306,8 +314,8 @@ fun MoviesList(
     modifier: Modifier = Modifier.padding(
         horizontal = dimensionResource(id = R.dimen.home_movies_list_padding)
     ),
-    onMovieItemClick: (MovieItemViewState) -> Unit = {},
-    movieItems: List<MovieItemViewState>
+    onMovieItemClick: (MovieItem) -> Unit = {},
+    movieItems: List<MovieItem>
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
