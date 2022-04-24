@@ -225,15 +225,17 @@ fun markAnotherItem(typeList : List<MovieGroup>, id : Int) {}
 
 @Composable
 fun TypeList(typeList : List<MovieGroup>) {
+    var selectedIndex : Int by remember { mutableStateOf(1) }
     LazyRow() {
         items(typeList) {
-            ClickableText(text = AnnotatedString(it.title),
-                onClick = {},
+            val id = it.id
+            Text(text = it.title,
+                color = if (selectedIndex == id) BlueTitle else Color.Black,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
                     vertical = dimensionResource(id = R.dimen.vertical_spacing)
-                ),
-                style = MaterialTheme.typography.body1
+                ).clickable{ selectedIndex = id },
+                style = if (selectedIndex == id) MaterialTheme.typography.h2 else MaterialTheme.typography.body1
             )
         }
     }

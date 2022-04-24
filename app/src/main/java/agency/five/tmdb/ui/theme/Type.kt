@@ -19,6 +19,11 @@ val Typography = Typography(
                 fontFamily = FontFamily(Font(R.font.quicksand_bold)),
                 fontWeight = FontWeight.Bold,
                 fontSize = 25.sp
+        ),
+        h2 = TextStyle(
+                fontFamily = FontFamily(Font(R.font.quicksand_bold)),
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
         )
         /* Other default text styles to override
     button = TextStyle(
