@@ -35,7 +35,7 @@ class HomeViewModel() : ViewModel() {
     private val _movies = MutableStateFlow(movieItems)
     private val movies = _movies.asStateFlow()
 
-    private var items: List<MovieItem> = emptyList()
+    var items: List<MovieItem> = emptyList()
 
     init {
         viewModelScope.launch {

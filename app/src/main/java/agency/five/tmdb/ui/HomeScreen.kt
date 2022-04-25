@@ -36,32 +36,7 @@ val moviesViewModelModule = module {
 
 @ExperimentalMaterialApi
 @Composable
-fun HomeScreen() {
-
-    var movieItems by remember {
-        mutableStateOf(
-            listOf(
-                MovieItem(
-                    id = 1,
-                    title = "The Shawshank Redemption",
-                    overview = "Overview",
-                    imageUrl = "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_UX128_CR0,3,128,176_AL_.jpg"
-                ),
-                MovieItem(
-                    id = 2,
-                    title = "The Godfather",
-                    overview = "Overview",
-                    imageUrl = "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_UX128_CR0,1,128,176_AL_.jpg"
-                ),
-                MovieItem(
-                    id = 3,
-                    title = "The Dark Knight",
-                    overview = "Overview",
-                    imageUrl = "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_UX128_CR0,3,128,176_AL_.jpg"
-                )
-            )
-        )
-    }
+fun HomeScreen(viewModel: HomeViewModel) {
 
     var typeList1 by remember {
         mutableStateOf(
@@ -134,13 +109,13 @@ fun HomeScreen() {
             item { SearchField() }
             item { Title("What's popular") }
             item { TypeList(typeList = typeList1) }
-            item { MoviesList(movieItems = movieItems) }
+            item { MoviesList(movieItems = viewModel.items) }
             item { Title(title = "Free to watch") }
             item { TypeList(typeList = typeList2) }
-            item { MoviesList(movieItems = movieItems) }
+            item { MoviesList(movieItems = viewModel.items) }
             item { Title(title = "Trending") }
             item { TypeList(typeList = typeList3) }
-            item { MoviesList(movieItems = movieItems) }
+            item { MoviesList(movieItems = viewModel.items) }
             item { BottomBarSpacer() }
         }
     }
@@ -322,7 +297,6 @@ fun MoviesList(
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(
-            //horizontal = dimensionResource(id = R.dimen.home_movies_list_content_padding_horizontal),
             vertical = dimensionResource(id = R.dimen.home_movies_list_content_padding_vertical)
         )
     ) {

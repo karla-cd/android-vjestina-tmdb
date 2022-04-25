@@ -9,16 +9,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 
 @Composable
 fun DetailsScreen() {
@@ -29,6 +33,9 @@ fun DetailsScreen() {
         LazyColumn() {
             item { ImageHeaderWithBackArrow() }
             item { MovieHeader("Iron man (2008)", "05/02/2008 (US)", "Action, Science Fiction, Adventure  2h 6m") }
+            item { Title("Overview") }
+            item { Overview(overview = "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.") }
+            item { Title("Top Billed Cast") }
         }
     }
     BackPressHandler(onBackPressed = { Router.navigateTo(Screen.HomeScreen) })
@@ -108,6 +115,47 @@ fun StarButton() {
         )
     }
 }
+
+@Composable
+fun Overview(overview : String) {
+    Text(text = overview,
+        modifier = Modifier.padding(
+            horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+            vertical = dimensionResource(id = R.dimen.vertical_spacing)
+        ),
+        style = MaterialTheme.typography.body1
+    )
+}
+
+@Composable
+fun ActorCard(
+    modifier: Modifier = Modifier,
+    onMovieItemClick: () -> Unit = {},
+    item: MovieItem
+) {
+    Box(
+        modifier = modifier.clickable { onMovieItemClick() }
+    ) {
+        Image(
+            painter = rememberImagePainter(item.imageUrl),
+            contentDescription = null,
+            modifier = Modifier
+                .size(
+                    width = dimensionResource(id = R.dimen.movie_card_width),
+                    height = dimensionResource(id = R.dimen.movie_card_height)
+                )
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(
+                    onClick = {
+                        Router.navigateTo(Screen.DetailsScreen)
+                    }
+                ),
+            contentScale = ContentScale.Crop
+        )
+        FavoriteButton(item)
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

@@ -31,7 +31,7 @@ class FavoritesViewModel() : ViewModel() {
     private val _favoriteMovies = MutableStateFlow(favoriteMovieItems)
     private val favoriteMovies = _favoriteMovies.asStateFlow()
 
-    private var items: List<MovieItem> = emptyList()
+    var items: List<MovieItem> = emptyList()
 
     init {
         viewModelScope.launch {
