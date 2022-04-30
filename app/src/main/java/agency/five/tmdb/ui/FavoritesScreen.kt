@@ -19,15 +19,11 @@ import androidx.compose.ui.unit.dp
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val favoriteMoviesViewModelModule = module {
-    viewModel {
-        FavoritesViewModel()
-    }
-}
-
 @ExperimentalMaterialApi
 @Composable
 fun FavoritesScreen(viewModel: FavoritesViewModel) {
+
+   val moviesFavoriteState : State<List<MovieItem>> = viewModel.favoriteMovies.collectAsState(initial = emptyList())
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
@@ -43,7 +39,7 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
                     .background(Color.White)
                 ) }
             item { Title("Favorites") }
-            item { MoviesList(movieItems = viewModel.items) }
+            item { MoviesList(movieItems = moviesFavoriteState.value) }
         }
     }
 

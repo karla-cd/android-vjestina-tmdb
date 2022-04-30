@@ -28,15 +28,17 @@ import coil.compose.rememberImagePainter
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val moviesViewModelModule = module {
-    viewModel {
-        HomeViewModel()
-    }
-}
-
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
+
+    val moviesPopularState : State<List<MovieItem>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
+
+    val moviesStreamingState : State<List<MovieItem>> = viewModel.moviesStreaming.collectAsState(initial = emptyList())
+    val moviesTVState : State<List<MovieItem>> = viewModel.moviesTV.collectAsState(initial = emptyList())
+    val moviesOnRentState : State<List<MovieItem>> = viewModel.moviesOnRent.collectAsState(initial = emptyList())
+
+    val moviesLists : List<List<MovieItem>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesTVState.value)
 
     var typeList1 by remember {
         mutableStateOf(
@@ -108,14 +110,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
             item { ImageHeader() }
             item { SearchField() }
             item { Title("What's popular") }
-            item { TypeList(typeList = typeList1) }
-            item { MoviesList(movieItems = viewModel.items) }
+            item { TypeList(typeList = typeList1, moviesLists) }
             item { Title(title = "Free to watch") }
-            item { TypeList(typeList = typeList2) }
-            item { MoviesList(movieItems = viewModel.items) }
+            item { TypeList(typeList = typeList2, moviesLists)  }
             item { Title(title = "Trending") }
-            item { TypeList(typeList = typeList3) }
-            item { MoviesList(movieItems = viewModel.items) }
+            item { TypeList(typeList = typeList3, moviesLists) }
             item { BottomBarSpacer() }
         }
     }
@@ -196,24 +195,25 @@ data class MovieGroup(
     val marked : Boolean
 )
 
-fun markAnotherItem(typeList : List<MovieGroup>, id : Int) {}
-
 @Composable
-fun TypeList(typeList : List<MovieGroup>) {
+fun TypeList(typeList : List<MovieGroup>, items : List<List<MovieItem>>) {
     var selectedIndex : Int by remember { mutableStateOf(1) }
     LazyRow() {
         items(typeList) {
             val id = it.id
             Text(text = it.title,
                 color = if (selectedIndex == id) BlueTitle else Color.Black,
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
-                    vertical = dimensionResource(id = R.dimen.vertical_spacing)
-                ).clickable{ selectedIndex = id },
+                modifier = Modifier
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+                        vertical = dimensionResource(id = R.dimen.vertical_spacing)
+                    )
+                    .clickable { selectedIndex = id },
                 style = if (selectedIndex == id) MaterialTheme.typography.h2 else MaterialTheme.typography.body1
             )
         }
     }
+    MoviesList(movieItems = items[selectedIndex - 1])
 }
 
 data class MovieItem(
@@ -251,8 +251,6 @@ fun MovieCard(
         FavoriteButton(item)
     }
 }
-
-// val favoritesList : MutableList<MovieItemViewState> by remember { mutableListOf<MovieItemViewState>() }
 
 @Composable
 fun FavoriteButton(movie : MovieItem) {

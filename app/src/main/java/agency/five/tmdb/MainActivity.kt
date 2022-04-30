@@ -9,6 +9,7 @@ import androidx.compose.material.Surface
 import agency.five.tmdb.ui.theme.TmdbTheme
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.lifecycle.ViewModel
+import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.viewModel
 import org.koin.core.context.startKoin
 
@@ -19,12 +20,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TmdbTheme {
-                startKoin {
-                    modules(moviesViewModelModule, favoriteMoviesViewModelModule)
-                }
-                val homeViewModel : HomeViewModel by viewModel()
+                val homeViewModel : HomeViewModel = getViewModel()
                 val favoritesViewModel : FavoritesViewModel by viewModel()
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     when (Router.currentScreen) {
                         Screen.HomeScreen -> HomeScreen(homeViewModel)
