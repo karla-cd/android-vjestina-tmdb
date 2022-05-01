@@ -8,6 +8,9 @@
     <dimen name="home_movies_list_padding">10dp</dimen>
     <dimen name="horizontal_spacing">20dp</dimen>
     <dimen name="vertical_spacing">5dp</dimen>
+    <dimen name="start_spacing">20dp</dimen>
+    <dimen name="end_spacing">2dp</dimen>
+    <dimen name="top_spacing">5dp</dimen>
     <dimen name="search_spacing">20dp</dimen>
     <dimen name="search_size">25dp</dimen>
     <dimen name="logo_height">70dp</dimen>
@@ -16,6 +19,6 @@
     <dimen name="heart_size">40dp</dimen>
     <dimen name="heart_circle">10dp</dimen>
     <dimen name="title_left_padding">20dp</dimen>
-    <dimen name="title_top_padding">180dp</dimen>
+    <dimen name="title_top_padding">130dp</dimen>
     <dimen name="title_size">40sp</dimen>
 </resources>

@@ -19,7 +19,7 @@ val Typography = Typography(
         body2 = TextStyle(
                 fontFamily = FontFamily(Font(R.font.quicksand_regular)),
                 fontWeight = FontWeight.Normal,
-                fontSize = 20.sp
+                fontSize = 12.sp
         ),
         h1 = TextStyle(
                 fontFamily = FontFamily(Font(R.font.quicksand_bold)),
@@ -29,7 +29,6 @@ val Typography = Typography(
         h2 = TextStyle(
                 fontFamily = FontFamily(Font(R.font.quicksand_bold)),
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textDecoration = TextDecoration.Underline
+                fontSize = 15.sp
         )
 )

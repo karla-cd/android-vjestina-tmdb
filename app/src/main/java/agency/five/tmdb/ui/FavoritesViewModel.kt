@@ -10,6 +10,8 @@ class FavoritesViewModel(val movieRepository : MovieRepository) : ViewModel() {
 
     public var moviesFavorite : Flow<List<MovieItem>> = MutableStateFlow(emptyList())
 
+    public suspend fun removeFromFavorites(movie : MovieItem) = movieRepository.removeFromFavorites(movie)
+
     init {
         viewModelScope.launch {
             moviesFavorite = movieRepository.getFavoriteMovies()

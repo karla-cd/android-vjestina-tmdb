@@ -300,8 +300,10 @@ fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : L
             MovieCard(
                 viewModel = viewModel,
                 modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
-                    vertical = dimensionResource(id = R.dimen.vertical_spacing)
+                    start = dimensionResource(id = R.dimen.start_spacing),
+                    top = dimensionResource(id = R.dimen.top_spacing),
+                    end = dimensionResource(id = R.dimen.end_spacing),
+
                 ),
                 item = it,
                 onMovieItemClick = {}
