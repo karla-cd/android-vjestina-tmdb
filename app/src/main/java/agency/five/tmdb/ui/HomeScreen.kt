@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,26 +20,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.module
+import kotlinx.coroutines.runBlocking
 
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
 
     val moviesPopularState : State<List<MovieItem>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
-
     val moviesStreamingState : State<List<MovieItem>> = viewModel.moviesStreaming.collectAsState(initial = emptyList())
     val moviesTVState : State<List<MovieItem>> = viewModel.moviesTV.collectAsState(initial = emptyList())
     val moviesOnRentState : State<List<MovieItem>> = viewModel.moviesOnRent.collectAsState(initial = emptyList())
 
-    val moviesLists : List<List<MovieItem>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesTVState.value)
+    val moviesLists : List<List<MovieItem>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesPopularState.value)
 
-    var typeList1 by remember {
+    val typeList1 by remember {
         mutableStateOf(
             listOf(
                 MovieGroup(
@@ -67,7 +62,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
         )
     }
 
-    var typeList2 by remember {
+    val typeList2 by remember {
         mutableStateOf(
             listOf(
                 MovieGroup(
@@ -84,7 +79,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
         )
     }
 
-    var typeList3 by remember {
+    val typeList3 by remember {
         mutableStateOf(
             listOf(
                 MovieGroup(
@@ -110,11 +105,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
             item { ImageHeader() }
             item { SearchField() }
             item { Title("What's popular") }
-            item { TypeList(typeList = typeList1, moviesLists) }
+            item { MoviesList(viewModel = viewModel, typeList = typeList1, moviesLists) }
             item { Title(title = "Free to watch") }
-            item { TypeList(typeList = typeList2, moviesLists)  }
+            item { MoviesList(viewModel = viewModel, typeList = typeList2, moviesLists)  }
             item { Title(title = "Trending") }
-            item { TypeList(typeList = typeList3, moviesLists) }
+            item { MoviesList(viewModel = viewModel, typeList = typeList3, moviesLists) }
             item { BottomBarSpacer() }
         }
     }
@@ -135,7 +130,8 @@ fun ImageHeader() {
             contentDescription = "",
             modifier = Modifier
                 .height(dimensionResource(id = R.dimen.logo_height))
-                .width(dimensionResource(id = R.dimen.logo_width)))
+                .width(dimensionResource(id = R.dimen.logo_width))
+        )
     }
 }
 
@@ -192,42 +188,23 @@ fun Title(title : String) {
 data class MovieGroup(
     val id: Int,
     val title: String,
-    val marked : Boolean
+    val marked : Boolean,
 )
 
-@Composable
-fun TypeList(typeList : List<MovieGroup>, items : List<List<MovieItem>>) {
-    var selectedIndex : Int by remember { mutableStateOf(1) }
-    LazyRow() {
-        items(typeList) {
-            val id = it.id
-            Text(text = it.title,
-                color = if (selectedIndex == id) BlueTitle else Color.Black,
-                modifier = Modifier
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
-                        vertical = dimensionResource(id = R.dimen.vertical_spacing)
-                    )
-                    .clickable { selectedIndex = id },
-                style = if (selectedIndex == id) MaterialTheme.typography.h2 else MaterialTheme.typography.body1
-            )
-        }
-    }
-    MoviesList(movieItems = items[selectedIndex - 1])
-}
-
 data class MovieItem(
-    val id: Int,
+    var id: Int,
     val title: String,
     val overview: String,
-    val imageUrl: String
+    val imageUrl: String,
+    var liked: Boolean = false,
 )
 
 @Composable
 fun MovieCard(
+    viewModel : HomeViewModel,
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
-    item: MovieItem
+    item: MovieItem,
 ) {
     Box(
         modifier = modifier.clickable { onMovieItemClick() }
@@ -248,13 +225,14 @@ fun MovieCard(
                 ),
             contentScale = ContentScale.Crop
         )
-        FavoriteButton(item)
+        FavoriteButton(viewModel, item)
     }
 }
 
 @Composable
-fun FavoriteButton(movie : MovieItem) {
-    var hello : Boolean by remember { mutableStateOf(false) }
+fun FavoriteButton(viewModel : HomeViewModel, movie : MovieItem) {
+    var like : Boolean by remember { mutableStateOf(false) }
+    like = movie.liked
 
     Surface(modifier = Modifier
         .padding(
@@ -264,7 +242,7 @@ fun FavoriteButton(movie : MovieItem) {
         color = Color.Transparent
     ) {
         Image(
-            painter = if(hello) {
+            painter = if(like) {
                 painterResource(id = R.drawable.full_heart)
             } else {
                 painterResource(id = R.drawable.heart)
@@ -276,8 +254,18 @@ fun FavoriteButton(movie : MovieItem) {
                 .padding(dimensionResource(id = R.dimen.heart_circle))
                 .clickable(
                     onClick = {
-                        hello = !hello
-                        // favoritesList.add(movie)
+                        like = !like
+                        if (like) {
+                            movie.liked = true
+                            runBlocking<Unit> {
+                                viewModel.addFavoriteMovie(movie)
+                            }
+                        } else {
+                            movie.liked = false
+                            runBlocking<Unit> {
+                                viewModel.removeFromFavorites(movie)
+                            }
+                        }
                     }
                 )
         )
@@ -285,21 +273,32 @@ fun FavoriteButton(movie : MovieItem) {
 }
 
 @Composable
-fun MoviesList(
-    modifier: Modifier = Modifier.padding(
-        horizontal = dimensionResource(id = R.dimen.home_movies_list_padding)
-    ),
-    onMovieItemClick: (MovieItem) -> Unit = {},
-    movieItems: List<MovieItem>
-) {
+fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : List<List<MovieItem>>) {
+    var selectedIndex : Int by remember { mutableStateOf(1) }
+    LazyRow() {
+        items(typeList) {
+            val id = it.id
+            Text(text = it.title,
+                color = if (selectedIndex == id) BlueTitle else Color.Black,
+                modifier = Modifier
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
+                        vertical = dimensionResource(id = R.dimen.vertical_spacing)
+                    )
+                    .clickable { selectedIndex = id },
+                style = if (selectedIndex == id) MaterialTheme.typography.h2 else MaterialTheme.typography.body1
+            )
+        }
+    }
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(
             vertical = dimensionResource(id = R.dimen.home_movies_list_content_padding_vertical)
         )
     ) {
-        items(movieItems) {
+        items(items[selectedIndex - 1]) {
             MovieCard(
+                viewModel = viewModel,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
                     vertical = dimensionResource(id = R.dimen.vertical_spacing)
@@ -313,11 +312,11 @@ fun MoviesList(
 
 @Composable
 fun BottomBar() {
-    var home : Boolean by remember { mutableStateOf(true) }
     BottomNavigation(
         elevation = 12.dp,
         backgroundColor = Color.White
     ) {
+        var home : Boolean by remember { mutableStateOf(true) }
         BottomNavigationItem(icon = {
             Image(painter = if (home) painterResource(id = R.drawable.marked_home) else painterResource(id = R.drawable.home),
                 "")

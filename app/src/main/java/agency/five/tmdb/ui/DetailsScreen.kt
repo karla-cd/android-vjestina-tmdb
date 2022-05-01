@@ -152,7 +152,7 @@ fun ActorCard(
                 ),
             contentScale = ContentScale.Crop
         )
-        FavoriteButton(item)
+        //FavoriteButton(item)
     }
 }
 
