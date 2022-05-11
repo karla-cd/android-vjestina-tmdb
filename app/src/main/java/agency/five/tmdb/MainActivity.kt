@@ -1,38 +1,36 @@
 package agency.five.tmdb
 
+import agency.five.tmdb.ui.*
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import agency.five.tmdb.ui.theme.TmdbTheme
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.lifecycle.ViewModel
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.viewModel
+import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
+
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TmdbTheme {
-                // A surface container using the 'background' color from the theme
+                val homeViewModel : HomeViewModel = getViewModel()
+                val favoritesViewModel : FavoritesViewModel by viewModel()
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    when (Router.currentScreen) {
+                        Screen.HomeScreen -> HomeScreen(homeViewModel)
+                        Screen.FavoritesScreen -> FavoritesScreen(favoritesViewModel)
+                        Screen.DetailsScreen -> DetailsScreen()
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TmdbTheme {
-        Greeting("Android")
-    }
-}
