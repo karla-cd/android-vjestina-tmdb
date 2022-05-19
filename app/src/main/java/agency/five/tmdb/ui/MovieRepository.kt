@@ -13,9 +13,7 @@ interface MovieRepository {
     suspend fun removeFromFavorites(movie : MovieItem) : List<MovieItem>
 }
 
-internal class MovieRepositoryImpl(private val movieApi : MovieApi) : MovieRepository {
-
-    private val database : Database = Database()
+internal class MovieRepositoryImpl(private val movieApi : MovieApi, private val database : Database) : MovieRepository {
 
     override suspend fun getPopularMovies() : Flow<List<MovieItem>> = flow {
         emit(movieApi.getPopularMovies())

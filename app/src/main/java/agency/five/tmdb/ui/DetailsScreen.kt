@@ -88,17 +88,15 @@ fun DetailsScreen() {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
-        bottomBar = { BottomBar() }
+        topBar = { ImageHeaderWithBackArrow() },
     ) {
         LazyColumn() {
-            item { ImageHeaderWithBackArrow() }
             item { MovieHeader("Iron man (2008)", "05/02/2008 (US)", "Action, Science Fiction, Adventure  2h 6m") }
             item { Title("Overview") }
             item { Overview(overview = "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.") }
             item { ProductionMembers(productionMembers = productionMembers) }
             item { Title("Top Billed Cast") }
             item { Actors(actors = actors) }
-            item { BottomBarSpacer() }
         }
     }
     BackPressHandler(onBackPressed = { Router.navigateTo(Screen.HomeScreen) })
@@ -110,7 +108,7 @@ fun ImageHeaderWithBackArrow() {
         modifier = Modifier
             .background(BlueTitle)
             .padding(dimensionResource(id = R.dimen.logo_padding))
-            .fillMaxSize(),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -291,12 +289,3 @@ fun Actors(actors : List<Actor>) {
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TmdbTheme {
-        MovieHeader("Iron man", "05/02/2008 (US)", "Action, Science Fiction, Adventure  2h 6m")
-    }
-}*/

@@ -99,10 +99,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
+        topBar = { ImageHeader() },
         bottomBar = { BottomBar() }
     ) {
         LazyColumn() {
-            item { ImageHeader() }
             item { SearchField() }
             item { Title("What's popular") }
             item { MoviesList(viewModel = viewModel, typeList = typeList1, moviesLists) }
@@ -121,7 +121,7 @@ fun ImageHeader() {
         modifier = Modifier
             .background(BlueTitle)
             .padding(dimensionResource(id = R.dimen.logo_padding))
-            .fillMaxSize(),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 

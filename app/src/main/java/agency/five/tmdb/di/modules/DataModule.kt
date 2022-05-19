@@ -8,7 +8,6 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<MovieRepository> {
-        MovieRepositoryImpl(MovieApiImpl())
+        MovieRepositoryImpl(MovieApiImpl(), Database())
     }
-    single { Database() }
 }
