@@ -23,17 +23,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
 
-    val moviesPopularState : State<List<MovieItem>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
-    val moviesStreamingState : State<List<MovieItem>> = viewModel.moviesStreaming.collectAsState(initial = emptyList())
-    val moviesTVState : State<List<MovieItem>> = viewModel.moviesTV.collectAsState(initial = emptyList())
-    val moviesOnRentState : State<List<MovieItem>> = viewModel.moviesOnRent.collectAsState(initial = emptyList())
+    val moviesPopularState : State<List<Movie>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
+    val moviesStreamingState : State<List<Movie>> = viewModel.moviesStreaming.collectAsState(initial = emptyList())
+    val moviesTVState : State<List<Movie>> = viewModel.moviesTV.collectAsState(initial = emptyList())
+    val moviesOnRentState : State<List<Movie>> = viewModel.moviesOnRent.collectAsState(initial = emptyList())
 
-    val moviesLists : List<List<MovieItem>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesPopularState.value)
+    val moviesLists : List<List<Movie>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesPopularState.value)
 
     val typeList1 by remember {
         mutableStateOf(
@@ -191,6 +192,7 @@ data class MovieGroup(
     val marked : Boolean,
 )
 
+@Serializable
 data class MovieItem(
     var id: Int,
     val title: String,
@@ -204,13 +206,13 @@ fun MovieCard(
     viewModel : HomeViewModel,
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
-    item: MovieItem,
+    item: Movie,
 ) {
     Box(
         modifier = modifier.clickable { onMovieItemClick() }
     ) {
         Image(
-            painter = rememberImagePainter(item.imageUrl),
+            painter = rememberImagePainter("https://image.tmdb.org/t/p/w500" + item.poster_path),
             contentDescription = null,
             modifier = Modifier
                 .size(
@@ -230,9 +232,9 @@ fun MovieCard(
 }
 
 @Composable
-fun FavoriteButton(viewModel : HomeViewModel, movie : MovieItem) {
+fun FavoriteButton(viewModel : HomeViewModel, movie : Movie) {
     var like : Boolean by remember { mutableStateOf(false) }
-    like = movie.liked
+    like = movie.adult
 
     Surface(modifier = Modifier
         .padding(
@@ -256,12 +258,12 @@ fun FavoriteButton(viewModel : HomeViewModel, movie : MovieItem) {
                     onClick = {
                         like = !like
                         if (like) {
-                            movie.liked = true
+                            movie.adult = true
                             runBlocking<Unit> {
                                 viewModel.addFavoriteMovie(movie)
                             }
                         } else {
-                            movie.liked = false
+                            movie.adult = false
                             runBlocking<Unit> {
                                 viewModel.removeFromFavorites(movie)
                             }
@@ -273,7 +275,7 @@ fun FavoriteButton(viewModel : HomeViewModel, movie : MovieItem) {
 }
 
 @Composable
-fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : List<List<MovieItem>>) {
+fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : List<List<Movie>>) {
     var selectedIndex : Int by remember { mutableStateOf(1) }
     LazyRow() {
         items(typeList) {

@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun FavoritesScreen(viewModel: FavoritesViewModel) {
 
-    val moviesFavoriteState : State<List<MovieItem>> = viewModel.moviesFavorite.collectAsState(initial = emptyList())
+    val moviesFavoriteState : State<List<Movie>> = viewModel.moviesFavorite.collectAsState(initial = emptyList())
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
@@ -53,13 +53,13 @@ fun MovieCard(
     viewModel: FavoritesViewModel,
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
-    item: MovieItem
+    item: Movie
 ) {
     Box(
         modifier = modifier.clickable { onMovieItemClick() }
     ) {
         Image(
-            painter = rememberImagePainter(item.imageUrl),
+            painter = rememberImagePainter("https://image.tmdb.org/t/p/w500" + item.poster_path),
             contentDescription = null,
             modifier = Modifier
                 .size(
@@ -79,9 +79,9 @@ fun MovieCard(
 }
 
 @Composable
-fun FavoriteButton(viewModel : FavoritesViewModel, movie : MovieItem) {
+fun FavoriteButton(viewModel : FavoritesViewModel, movie : Movie) {
     var like : Boolean by remember { mutableStateOf(false) }
-    like = movie.liked
+    like = movie.adult
 
     Surface(modifier = Modifier
         .padding(
@@ -105,12 +105,12 @@ fun FavoriteButton(viewModel : FavoritesViewModel, movie : MovieItem) {
                     onClick = {
                         like = !like
                         if (like) {
-                            movie.liked = true
+                            movie.adult = true
                             runBlocking<Unit> {
                                 //viewModel.addFavoriteMovie(movie)
                             }
                         } else {
-                            movie.liked = false
+                            movie.adult = false
                             runBlocking<Unit> {
                                 viewModel.removeFromFavorites(movie)
                             }
@@ -125,7 +125,7 @@ fun FavoriteButton(viewModel : FavoritesViewModel, movie : MovieItem) {
 @Composable
 fun MoviesGrid(
     viewModel: FavoritesViewModel,
-    movieItems: List<MovieItem>
+    movieItems: List<Movie>
 ) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),

@@ -1,22 +1,27 @@
 package agency.five.tmdb.ui
 
+import io.ktor.client.*
+import io.ktor.client.features.*
+import io.ktor.client.features.get
+import io.ktor.client.request.*
+
 interface MovieApi {
-    suspend fun getPopularMovies() : List<MovieItem>
-    suspend fun getStreamingMovies() : List<MovieItem>
-    suspend fun getTVMovies() : List<MovieItem>
-    suspend fun getOnRentMovies() : List<MovieItem>
+    suspend fun getPopularMovies() : MoviesResponse
+    suspend fun getStreamingMovies() : MoviesResponse
+    suspend fun getTVMovies() : MoviesResponse
+    suspend fun getOnRentMovies() : MoviesResponse
 }
 
-internal class MovieApiImpl : MovieApi {
+internal class MovieApiImpl(
+    private val client: HttpClient
+) : MovieApi {
 
-    private val database : Database = Database()
+    override suspend fun getPopularMovies(): MoviesResponse = client.get("https://api.themoviedb.org/3/movie/popular?api_key=8c4bf1b3b1e7d645233f7a48cd613638")
 
-    override suspend fun getPopularMovies(): List<MovieItem> = database.popularMovies
+    override suspend fun getStreamingMovies(): MoviesResponse = client.get("https://api.themoviedb.org/3/movie/now_playing?api_key=8c4bf1b3b1e7d645233f7a48cd613638")
 
-    override suspend fun getStreamingMovies(): List<MovieItem> = database.streamingMovies
+    override suspend fun getTVMovies(): MoviesResponse = client.get("https://api.themoviedb.org/3/movie/upcoming?api_key=8c4bf1b3b1e7d645233f7a48cd613638")
 
-    override suspend fun getTVMovies(): List<MovieItem> = database.tVMovies
-
-    override suspend fun getOnRentMovies(): List<MovieItem> = database.onRentMovies
+    override suspend fun getOnRentMovies(): MoviesResponse = client.get("https://api.themoviedb.org/3/movie/upcoming?api_key=8c4bf1b3b1e7d645233f7a48cd613638")
 
 }
