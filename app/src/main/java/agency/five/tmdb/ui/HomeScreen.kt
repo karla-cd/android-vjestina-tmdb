@@ -30,20 +30,20 @@ import kotlinx.serialization.Serializable
 fun HomeScreen(viewModel: HomeViewModel) {
 
     val moviesPopularState : State<List<Movie>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
-    val moviesStreamingState : State<List<Movie>> = viewModel.moviesStreaming.collectAsState(initial = emptyList())
-    val moviesTVState : State<List<Movie>> = viewModel.moviesTV.collectAsState(initial = emptyList())
-    val moviesOnRentState : State<List<Movie>> = viewModel.moviesOnRent.collectAsState(initial = emptyList())
+    val moviesNowPlayingState : State<List<Movie>> = viewModel.moviesNowPlaying.collectAsState(initial = emptyList())
+    val moviesUpcomingState : State<List<Movie>> = viewModel.moviesUpcoming.collectAsState(initial = emptyList())
+    val moviesTopRatedState : State<List<Movie>> = viewModel.moviesTopRated.collectAsState(initial = emptyList())
 
-    val moviesLists : List<List<Movie>> = listOf(moviesStreamingState.value, moviesTVState.value, moviesOnRentState.value, moviesPopularState.value)
+    val moviesLists : List<List<Movie>> = listOf(moviesNowPlayingState.value, moviesUpcomingState.value, moviesTopRatedState.value, moviesPopularState.value)
 
     val typeList1 by remember {
         mutableStateOf(
             listOf(
                 MovieGroup(
                     id = 1,
-                    title = "Streaming",
+                    title = "Popular",
                     marked = true
-                ),
+                ),/*
                 MovieGroup(
                     id = 2,
                     title = "On TV",
@@ -58,7 +58,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                     id = 4,
                     title = "In theaters",
                     marked = false
-                )
+                )*/
             )
         )
     }
@@ -68,14 +68,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
             listOf(
                 MovieGroup(
                     id = 1,
-                    title = "Movies",
+                    title = "Top rated",
                     marked = true
-                ),
+                ),/*
                 MovieGroup(
                     id = 2,
                     title = "TV",
                     marked = false
-                )
+                )*/
             )
         )
     }
@@ -85,12 +85,12 @@ fun HomeScreen(viewModel: HomeViewModel) {
             listOf(
                 MovieGroup(
                     id = 1,
-                    title = "Today",
+                    title = "Now playing",
                     marked = true
                 ),
                 MovieGroup(
                     id = 2,
-                    title = "This week",
+                    title = "Upcoming",
                     marked = false
                 )
             )
@@ -190,15 +190,6 @@ data class MovieGroup(
     val id: Int,
     val title: String,
     val marked : Boolean,
-)
-
-@Serializable
-data class MovieItem(
-    var id: Int,
-    val title: String,
-    val overview: String,
-    val imageUrl: String,
-    var liked: Boolean = false,
 )
 
 @Composable

@@ -8,21 +8,23 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val movieRepository : MovieRepository, val movieApi : MovieApi) : ViewModel() {
 
-    public var moviesPopular : Flow<List<Movie>> = MutableStateFlow(emptyList())
-    public var moviesStreaming : Flow<List<Movie>> = MutableStateFlow(emptyList())
-    public var moviesTV : Flow<List<Movie>> = MutableStateFlow(emptyList())
-    public var moviesOnRent : Flow<List<Movie>> = MutableStateFlow(emptyList())
+    var moviesPopular : Flow<List<Movie>> = MutableStateFlow(emptyList())
+    var moviesNowPlaying : Flow<List<Movie>> = MutableStateFlow(emptyList())
+    var moviesUpcoming : Flow<List<Movie>> = MutableStateFlow(emptyList())
+    var moviesTopRated : Flow<List<Movie>> = MutableStateFlow(emptyList())
 
-    public suspend fun addFavoriteMovie(movie : Movie) = movieRepository.addFavoriteMovie(movie)
+    suspend fun addFavoriteMovie(movie : Movie) = movieRepository.addFavoriteMovie(movie)
 
-    public suspend fun removeFromFavorites(movie : Movie) = movieRepository.removeFromFavorites(movie)
+    suspend fun removeFromFavorites(movie : Movie) = movieRepository.removeFromFavorites(movie)
+
+    suspend fun getMovieDetails(movieId : Int) : MovieDetailsResponse = movieRepository.getMovieDetails(movieId)
 
     init {
         viewModelScope.launch {
             moviesPopular = movieRepository.getPopularMovies()
-            moviesStreaming = movieRepository.getStreamingMovies()
-            moviesTV = movieRepository.getTVMovies()
-            moviesOnRent = movieRepository.getOnRentMovies()
+            moviesNowPlaying = movieRepository.getNowPlayingMovies()
+            moviesUpcoming = movieRepository.getUpcomingMovies()
+            moviesTopRated = movieRepository.getTopRatedMovies()
         }
     }
 }
