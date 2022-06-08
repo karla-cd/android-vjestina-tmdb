@@ -4,6 +4,8 @@ import agency.five.tmdb.json.Movie
 import agency.five.tmdb.json.MovieDetailsResponse
 import agency.five.tmdb.di.api.MovieApi
 import agency.five.tmdb.di.repo.MovieRepository
+import agency.five.tmdb.json.CrewMember
+import agency.five.tmdb.json.Role
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +24,10 @@ class HomeViewModel(private val movieRepository : MovieRepository, val movieApi 
     suspend fun removeFromFavorites(movie : Movie) = movieRepository.removeFromFavorites(movie)
 
     fun getMovieDetails(movieId : Int) : Flow<MovieDetailsResponse> = movieRepository.getMovieDetails(movieId)
+
+    fun getMovieCast(movieId : Int) : Flow<List<Role>> = movieRepository.getMovieCast(movieId)
+
+    fun getMovieCrew(movieId: Int) : Flow<List<CrewMember>> = movieRepository.getMovieCrew(movieId)
 
     init {
         viewModelScope.launch {

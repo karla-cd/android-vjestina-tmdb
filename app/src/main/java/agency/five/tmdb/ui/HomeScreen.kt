@@ -36,7 +36,9 @@ fun HomeScreen(navController : NavController, viewModel: HomeViewModel) {
     val moviesUpcomingState : State<List<Movie>> = viewModel.moviesUpcoming.collectAsState(initial = emptyList())
     val moviesTopRatedState : State<List<Movie>> = viewModel.moviesTopRated.collectAsState(initial = emptyList())
 
-    val moviesLists : List<List<Movie>> = listOf(moviesNowPlayingState.value, moviesUpcomingState.value, moviesTopRatedState.value, moviesPopularState.value)
+    val moviesLists1 : List<List<Movie>> = listOf(moviesPopularState.value)
+    val moviesLists2 : List<List<Movie>> = listOf(moviesTopRatedState.value)
+    val moviesLists3 : List<List<Movie>> = listOf(moviesNowPlayingState.value, moviesUpcomingState.value)
 
     val typeList1 by remember {
         mutableStateOf(
@@ -45,22 +47,7 @@ fun HomeScreen(navController : NavController, viewModel: HomeViewModel) {
                     id = 1,
                     title = "Popular",
                     marked = true
-                ),/*
-                MovieGroup(
-                    id = 2,
-                    title = "On TV",
-                    marked = false
                 ),
-                MovieGroup(
-                    id = 3,
-                    title = "For Rent",
-                    marked = false
-                ),
-                MovieGroup(
-                    id = 4,
-                    title = "In theaters",
-                    marked = false
-                )*/
             )
         )
     }
@@ -72,12 +59,7 @@ fun HomeScreen(navController : NavController, viewModel: HomeViewModel) {
                     id = 1,
                     title = "Top rated",
                     marked = true
-                ),/*
-                MovieGroup(
-                    id = 2,
-                    title = "TV",
-                    marked = false
-                )*/
+                ),
             )
         )
     }
@@ -108,11 +90,11 @@ fun HomeScreen(navController : NavController, viewModel: HomeViewModel) {
         LazyColumn() {
             item { SearchField() }
             item { Title("What's popular") }
-            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList1, moviesLists) }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList1, moviesLists1) }
             item { Title(title = "Free to watch") }
-            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList2, moviesLists)  }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList2, moviesLists2)  }
             item { Title(title = "Trending") }
-            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList3, moviesLists) }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList3, moviesLists3) }
             item { BottomBarSpacer() }
         }
     }

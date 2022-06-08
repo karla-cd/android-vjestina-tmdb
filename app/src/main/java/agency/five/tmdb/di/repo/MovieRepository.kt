@@ -1,9 +1,8 @@
 package agency.five.tmdb.di.repo
 
-import agency.five.tmdb.json.Movie
-import agency.five.tmdb.json.MovieDetailsResponse
 import agency.five.tmdb.di.db.Database
 import agency.five.tmdb.di.api.MovieApi
+import agency.five.tmdb.json.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -16,6 +15,8 @@ interface MovieRepository {
     suspend fun addFavoriteMovie(movie : Movie) : List<Movie>
     suspend fun removeFromFavorites(movie : Movie) : List<Movie>
     fun getMovieDetails(movieId : Int) : Flow<MovieDetailsResponse>
+    fun getMovieCast(movieId : Int) : Flow<List<Role>>
+    fun getMovieCrew(movieId : Int) : Flow<List<CrewMember>>
 }
 
 internal class MovieRepositoryImpl(private val movieApi : MovieApi, private val database : Database) :
@@ -45,6 +46,14 @@ internal class MovieRepositoryImpl(private val movieApi : MovieApi, private val 
 
     override fun getMovieDetails(movieId: Int): Flow<MovieDetailsResponse> = flow {
         emit(movieApi.getMovieDetails(movieId))
+    }
+
+    override fun getMovieCast(movieId: Int): Flow<List<Role>> = flow {
+        emit(movieApi.getMovieCast(movieId).roles)
+    }
+
+    override fun getMovieCrew(movieId: Int): Flow<List<CrewMember>> = flow {
+        emit(movieApi.getMovieCast(movieId).crew)
     }
 
 }

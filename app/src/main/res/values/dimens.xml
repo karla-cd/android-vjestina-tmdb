@@ -19,6 +19,6 @@
     <dimen name="heart_size">40dp</dimen>
     <dimen name="heart_circle">10dp</dimen>
     <dimen name="title_left_padding">20dp</dimen>
-    <dimen name="title_top_padding">130dp</dimen>
+    <dimen name="title_top_padding">50dp</dimen>
     <dimen name="title_size">40sp</dimen>
 </resources>

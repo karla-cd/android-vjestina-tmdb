@@ -1,7 +1,9 @@
 package agency.five.tmdb.ui
 
 import agency.five.tmdb.R
+import agency.five.tmdb.json.CrewMember
 import agency.five.tmdb.json.MovieDetailsResponse
+import agency.five.tmdb.json.Role
 import agency.five.tmdb.ui.theme.BlueTitle
 import agency.five.tmdb.vm.HomeViewModel
 import androidx.compose.foundation.Image
@@ -34,7 +36,7 @@ fun DetailsScreen(navController : NavController, viewModel : HomeViewModel, movi
 
     val movieDetails = viewModel.getMovieDetails(movieId).collectAsState(initial = null).value
 
-    val movie : MovieDetailsResponse = MovieDetailsResponse(
+    val movie = MovieDetailsResponse(
         adult = movieDetails?.adult ?: false,
         backdrop_path = movieDetails?.backdrop_path ?: "",
         belongs_to_collection = movieDetails?.belongs_to_collection,
@@ -62,60 +64,9 @@ fun DetailsScreen(navController : NavController, viewModel : HomeViewModel, movi
         vote_count = movieDetails?.vote_count ?: 0
     )
 
-    val productionMembers : List<ProductionMember> = listOf(
-        ProductionMember(
-            id = 1, 
-            name = "Don Heck", 
-            role = "Characters"
-        ),
-        ProductionMember(
-            id = 2,
-            name = "Jack Kirby",
-            role = "Characters"
-        ),
-        ProductionMember(
-            id = 3,
-            name = "Jon Favreau",
-            role = "Director"
-        ),
-        ProductionMember(
-            id = 4,
-            name = "Don Heck",
-            role = "Screenplay"
-        ),
-        ProductionMember(
-            id = 1,
-            name = "Jack Marcum",
-            role = "Screenplay"
-        ),
-        ProductionMember(
-            id = 1,
-            name = "Matt Holloway",
-            role = "Screenplay"
-        )
-    )
+    val roles = viewModel.getMovieCast(movieId).collectAsState(initial = null).value ?: emptyList()
 
-    val actors : List<Actor> = listOf(
-        Actor(
-            id = 1,
-            name = "Robert Downey Jr.",
-            role = "Tony Stark/Iron Man",
-            imageUrl = "https://s3-alpha-sig.figma.com/img/3238/5dd8/9c76f8ac0050ce88bfe0da9a9711f821?Expires=1652054400&Signature=e~vLgZs7KA9y2-bOSrtknhOI0R-i-ksKT82JqocCOqI4hWiowNy7M5qZWq3liahO-2cWn32uti9l6lGjpUiH84j-23IdFk6vZ0bp3Vj00gF~VwWtLWzPmTf4UiBAzN3bBfOy0Bj50DlmufHOCLqVpxjgE8BB12BQC~EWTw5h62cJwpg7SyIwuIzrkvP5RlH8cETa3eMs7wYh7U1iU2StLJqw5Fpt6xvwlXoHWekrqCwgXHQhDgp3uD-0mvqkkIdCPrK47VJSiQpBKjwotHWuG2xkFgE0YfH3Y-58eExkKMxT8YjdLoiCWf7rBsIDqtTZdWEe-WsIqOl~rPt7a7MTzQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-        ),
-        Actor(
-            id = 2,
-            name = "Terrence Howard",
-            role = "James Rhodes",
-            imageUrl = "https://s3-alpha-sig.figma.com/img/9b12/0d3e/20964d32c3bf159aa7658791385a8b53?Expires=1652054400&Signature=Ad~5es9Efx1ZhHHeEwHDgFV-qeAbZkgQLZZzIKR8nb3LwvGzyql5BawFqzW92Mb5DZH6ad5M1QCY3pAE15vIY79MxHwa0tAnPbk0MzbqnH~cRTtNFYYGhRMS0omSCGaa2cy4Z5X6L9yzTm7cEnddr1rGbODUV3GUCsBARNTpPxb0nCy61pb5qRBpFrwk45wgtwcY7O1~FN5A6fmBUyfZlYAWuf8jFcDWb4le5TgHcadBPH6OuUNBcGusMPDBUfXmNh7fXg0DYBx2eLsS47UOocvpqHA6xfml7P5ClrzNOQ1-FTwoIl-4hfGwNqiRoYOGYN2b7tjw3gaAFuT14-gXjQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-
-        ),
-        Actor(
-            id = 3,
-            name = "Jeff Bridges",
-            role = "Obadiah Stane / Iron Monger",
-            imageUrl = "https://s3-alpha-sig.figma.com/img/2cf4/82d7/530de657caa0f36c35f3b776c09ea221?Expires=1652054400&Signature=FIFOTsBxdDv9fv-UthcJO0zTAAwQJxnRLI1dIrxUmk0skwRseNkPtPH9LT2q2uhLB~-D~R0RzOwNv9JSSeZothJkjI4Clo3GtieZwgqfaWRmI~VvxOcKF~v5mB1hXCdx~mRt9SzQWyfY33eQqi0YtYQwiCHawvRkqW~BDY0G5zXyQSvc0Lgl1ViJNRT74CqdKY4~M0vMZE2YdWAhPhJ4Yc3t0wGmIsP3EPRQ39DcyhBw3uk0zCWbZqMnL31mPiIBwn2jcfrSXq5r2GpUK81JOtE0hGgknhL3vgkjn~CaRbU2FcMdIOEMaHcJxuHHKHMVbGwBw4uwX58DpudvPWiCXg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
-        )
-    )
+    val crew = viewModel.getMovieCrew(movieId).collectAsState(initial = null).value ?: emptyList()
 
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
@@ -128,14 +79,14 @@ fun DetailsScreen(navController : NavController, viewModel : HomeViewModel, movi
                     movie.title,
                     movie.release_date,
                     "Action, Science Fiction, Adventure  2h 6m",
-                    movie.poster_path
+                    movie.backdrop_path
                 )
             }
             item { Title("Overview") }
             item { Overview(overview = movie.overview) }
-            item { ProductionMembers(productionMembers = productionMembers) }
+            item { ProductionMembers(productionMembers = crew) }
             item { Title("Top Billed Cast") }
-            item { Actors(actors = actors) }
+            item { Actors(actors = roles) }
 
         }
     }
@@ -169,13 +120,13 @@ fun ImageHeaderWithBackArrow(navController : NavController) {
 }
 
 @Composable
-fun MovieHeader(title : String, date : String, genre : String, poster_path : String) {
+fun MovieHeader(title : String, date : String, genre : String, backdrop_path : String) {
     Box() {
-        Image(//painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w200$poster_path"),
-            //painter = painterResource(id = R.drawable.ironman),
-            painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w200/oqLzqCb2old88cVuXS0SGMHkP7Z.jpg"),
+        Image(painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500$backdrop_path"),
             contentDescription = "",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .height(230.dp)
+                .width(600.dp),
             contentScale = ContentScale.FillWidth
         )
         Column(
@@ -185,14 +136,14 @@ fun MovieHeader(title : String, date : String, genre : String, poster_path : Str
             )
         ) {
             Text(text = title,
-                color = Color.Black,
-                fontSize = 40.sp
+                color = Color.White,
+                fontSize = 30.sp
             )
             Text(text = date,
-                color = Color.Black
+                color = Color.White
             )
             Text(text = genre,
-                color = Color.Black
+                color = Color.White
             )
             StarButton()
         }
@@ -235,7 +186,7 @@ data class ProductionMember(
 )
 
 @Composable
-fun ProductionMembers(productionMembers : List<ProductionMember>) {
+fun ProductionMembers(productionMembers : List<CrewMember>) {
     LazyRow() {
         items(productionMembers) {
             val id = it.id
@@ -249,7 +200,7 @@ fun ProductionMembers(productionMembers : List<ProductionMember>) {
                     style = MaterialTheme.typography.h1
                 )
                 Text(
-                    text = it.role,
+                    text = it.known_for_department,
                     modifier = Modifier
                         .padding(
                             horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
@@ -270,12 +221,12 @@ data class Actor(
 )
 
 @Composable
-fun ActorCard(modifier : Modifier, actor : Actor) {
+fun ActorCard(modifier : Modifier, actor : Role) {
     Box(
         modifier = modifier.shadow(2.dp),
     ) {
         Image(
-            painter = rememberImagePainter(actor.imageUrl),
+            painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500${actor.profile_path}"),
             contentDescription = null,
             modifier = Modifier
                 .size(
@@ -298,7 +249,7 @@ fun ActorCard(modifier : Modifier, actor : Actor) {
                     style = MaterialTheme.typography.h2
                 )
                 Text(
-                    text = actor.role,
+                    text = actor.character,
                     modifier = Modifier.width(width = dimensionResource(id = R.dimen.movie_card_width)),
                     style = MaterialTheme.typography.body2,
                     color = Color.Gray
@@ -309,7 +260,7 @@ fun ActorCard(modifier : Modifier, actor : Actor) {
 }
 
 @Composable
-fun Actors(actors : List<Actor>) {
+fun Actors(actors : List<Role>) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(
