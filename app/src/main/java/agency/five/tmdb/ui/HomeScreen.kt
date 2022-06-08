@@ -1,7 +1,9 @@
 package agency.five.tmdb.ui
 
 import agency.five.tmdb.R
+import agency.five.tmdb.json.Movie
 import agency.five.tmdb.ui.theme.BlueTitle
+import agency.five.tmdb.vm.HomeViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,13 +23,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 
 @ExperimentalMaterialApi
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(navController : NavController, viewModel: HomeViewModel) {
 
     val moviesPopularState : State<List<Movie>> = viewModel.moviesPopular.collectAsState(initial = emptyList())
     val moviesNowPlayingState : State<List<Movie>> = viewModel.moviesNowPlaying.collectAsState(initial = emptyList())
@@ -106,11 +108,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
         LazyColumn() {
             item { SearchField() }
             item { Title("What's popular") }
-            item { MoviesList(viewModel = viewModel, typeList = typeList1, moviesLists) }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList1, moviesLists) }
             item { Title(title = "Free to watch") }
-            item { MoviesList(viewModel = viewModel, typeList = typeList2, moviesLists)  }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList2, moviesLists)  }
             item { Title(title = "Trending") }
-            item { MoviesList(viewModel = viewModel, typeList = typeList3, moviesLists) }
+            item { MoviesList(navController = navController, viewModel = viewModel, typeList = typeList3, moviesLists) }
             item { BottomBarSpacer() }
         }
     }
@@ -194,6 +196,7 @@ data class MovieGroup(
 
 @Composable
 fun MovieCard(
+    navController: NavController,
     viewModel : HomeViewModel,
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
@@ -203,7 +206,7 @@ fun MovieCard(
         modifier = modifier.clickable { onMovieItemClick() }
     ) {
         Image(
-            painter = rememberImagePainter("https://image.tmdb.org/t/p/w500" + item.poster_path),
+            painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w500" + item.poster_path),
             contentDescription = null,
             modifier = Modifier
                 .size(
@@ -213,7 +216,8 @@ fun MovieCard(
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(
                     onClick = {
-                        Router.navigateTo(Screen.DetailsScreen)
+                        //Router.navigateTo(Screen.DetailsScreen)
+                        navController.navigate("homeScreen/" + item.id)
                     }
                 ),
             contentScale = ContentScale.Crop
@@ -266,7 +270,7 @@ fun FavoriteButton(viewModel : HomeViewModel, movie : Movie) {
 }
 
 @Composable
-fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : List<List<Movie>>) {
+fun MoviesList(navController: NavController, viewModel : HomeViewModel, typeList : List<MovieGroup>, items : List<List<Movie>>) {
     var selectedIndex : Int by remember { mutableStateOf(1) }
     LazyRow() {
         items(typeList) {
@@ -291,6 +295,7 @@ fun MoviesList(viewModel : HomeViewModel, typeList : List<MovieGroup>, items : L
     ) {
         items(items[selectedIndex - 1]) {
             MovieCard(
+                navController = navController,
                 viewModel = viewModel,
                 modifier = Modifier.padding(
                     start = dimensionResource(id = R.dimen.start_spacing),

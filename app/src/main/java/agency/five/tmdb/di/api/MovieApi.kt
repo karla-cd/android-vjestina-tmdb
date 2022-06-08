@@ -1,8 +1,8 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.di.api
 
+import agency.five.tmdb.json.MovieDetailsResponse
+import agency.five.tmdb.json.MoviesResponse
 import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.client.features.get
 import io.ktor.client.request.*
 
 interface MovieApi {

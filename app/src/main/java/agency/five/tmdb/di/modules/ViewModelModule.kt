@@ -1,7 +1,7 @@
 package agency.five.tmdb.di.modules
 
-import agency.five.tmdb.ui.FavoritesViewModel
-import agency.five.tmdb.ui.HomeViewModel
+import agency.five.tmdb.vm.FavoritesViewModel
+import agency.five.tmdb.vm.HomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

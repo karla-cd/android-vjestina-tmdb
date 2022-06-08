@@ -1,12 +1,12 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.json
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MovieDetailsResponse(
+data class MovieDetails(
     val adult : Boolean,
     val backdrop_path : String,
-    val belongs_to_collection : String, //?? nez koji je ovo tip
+    val belongs_to_collection : Collection?,
     val budget : Long,
     val genres : List<Genre>,
     val homepage : String,

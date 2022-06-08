@@ -1,8 +1,9 @@
 package agency.five.tmdb.ui
 
 import agency.five.tmdb.R
+import agency.five.tmdb.json.MovieDetailsResponse
 import agency.five.tmdb.ui.theme.BlueTitle
-import agency.five.tmdb.ui.theme.TmdbTheme
+import agency.five.tmdb.vm.HomeViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,14 +23,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 
 @Composable
-fun DetailsScreen() {
-    
+fun DetailsScreen(navController : NavController, viewModel : HomeViewModel, movieId : Int) {
+
+    val movieDetails = viewModel.getMovieDetails(movieId).collectAsState(initial = null).value
+
+    val movie : MovieDetailsResponse = MovieDetailsResponse(
+        adult = movieDetails?.adult ?: false,
+        backdrop_path = movieDetails?.backdrop_path ?: "",
+        belongs_to_collection = movieDetails?.belongs_to_collection,
+        budget = movieDetails?.budget ?: 0,
+        genres = movieDetails?.genres ?: emptyList(),
+        homepage = movieDetails?.homepage ?: "",
+        id = movieDetails?.id ?: 0,
+        imdb_id = movieDetails?.imdb_id ?: "",
+        original_language = movieDetails?.original_language ?: "",
+        original_title = movieDetails?.original_title ?: "",
+        overview = movieDetails?.overview ?: "",
+        popularity = movieDetails?.popularity ?: 0.0f,
+        poster_path = movieDetails?.poster_path ?: "",
+        production_companies = movieDetails?.production_companies ?: emptyList(),
+        production_countries = movieDetails?.production_countries ?: emptyList(),
+        release_date = movieDetails?.release_date ?: "",
+        revenue = movieDetails?.revenue ?: 0,
+        runtime = movieDetails?.runtime ?: 0,
+        spoken_languages = movieDetails?.spoken_languages ?: emptyList(),
+        status = movieDetails?.status ?: "",
+        tagline = movieDetails?.tagline ?: "",
+        title = movieDetails?.title ?: "",
+        video = movieDetails?.video ?: false,
+        vote_average = movieDetails?.vote_average ?: 0.0f,
+        vote_count = movieDetails?.vote_count ?: 0
+    )
+
     val productionMembers : List<ProductionMember> = listOf(
         ProductionMember(
             id = 1, 
@@ -84,26 +116,34 @@ fun DetailsScreen() {
             imageUrl = "https://s3-alpha-sig.figma.com/img/2cf4/82d7/530de657caa0f36c35f3b776c09ea221?Expires=1652054400&Signature=FIFOTsBxdDv9fv-UthcJO0zTAAwQJxnRLI1dIrxUmk0skwRseNkPtPH9LT2q2uhLB~-D~R0RzOwNv9JSSeZothJkjI4Clo3GtieZwgqfaWRmI~VvxOcKF~v5mB1hXCdx~mRt9SzQWyfY33eQqi0YtYQwiCHawvRkqW~BDY0G5zXyQSvc0Lgl1ViJNRT74CqdKY4~M0vMZE2YdWAhPhJ4Yc3t0wGmIsP3EPRQ39DcyhBw3uk0zCWbZqMnL31mPiIBwn2jcfrSXq5r2GpUK81JOtE0hGgknhL3vgkjn~CaRbU2FcMdIOEMaHcJxuHHKHMVbGwBw4uwX58DpudvPWiCXg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
         )
     )
-    
+
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { ImageHeaderWithBackArrow() },
+        topBar = { ImageHeaderWithBackArrow(navController) },
     ) {
         LazyColumn() {
-            item { MovieHeader("Iron man (2008)", "05/02/2008 (US)", "Action, Science Fiction, Adventure  2h 6m") }
+            item {
+                MovieHeader(
+                    movie.title,
+                    movie.release_date,
+                    "Action, Science Fiction, Adventure  2h 6m",
+                    movie.poster_path
+                )
+            }
             item { Title("Overview") }
-            item { Overview(overview = "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.") }
+            item { Overview(overview = movie.overview) }
             item { ProductionMembers(productionMembers = productionMembers) }
             item { Title("Top Billed Cast") }
             item { Actors(actors = actors) }
+
         }
     }
     BackPressHandler(onBackPressed = { Router.navigateTo(Screen.HomeScreen) })
 }
 
 @Composable
-fun ImageHeaderWithBackArrow() {
+fun ImageHeaderWithBackArrow(navController : NavController) {
     Row(
         modifier = Modifier
             .background(BlueTitle)
@@ -116,7 +156,7 @@ fun ImageHeaderWithBackArrow() {
             contentDescription = "",
             modifier = Modifier.clickable(
                 onClick = {
-                    Router.navigateTo(Screen.HomeScreen)
+                    navController.navigate("homeScreen")
                 }
             )
         )
@@ -129,9 +169,11 @@ fun ImageHeaderWithBackArrow() {
 }
 
 @Composable
-fun MovieHeader(title : String, date : String, genre : String) {
+fun MovieHeader(title : String, date : String, genre : String, poster_path : String) {
     Box() {
-        Image(painter = painterResource(id = R.drawable.ironman),
+        Image(//painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w200$poster_path"),
+            //painter = painterResource(id = R.drawable.ironman),
+            painter = rememberAsyncImagePainter("https://image.tmdb.org/t/p/w200/oqLzqCb2old88cVuXS0SGMHkP7Z.jpg"),
             contentDescription = "",
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.FillWidth
@@ -143,14 +185,14 @@ fun MovieHeader(title : String, date : String, genre : String) {
             )
         ) {
             Text(text = title,
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 40.sp
             )
             Text(text = date,
-                color = Color.White
+                color = Color.Black
             )
             Text(text = genre,
-                color = Color.White
+                color = Color.Black
             )
             StarButton()
         }
@@ -168,8 +210,6 @@ fun StarButton() {
             painter = painterResource(id = R.drawable.star),
             contentDescription = "",
             modifier = Modifier
-                //.width(dimensionResource(id = R.dimen.heart_height))
-                //.height(dimensionResource(id = R.dimen.heart_width))
                 .size(dimensionResource(id = R.dimen.heart_size))
                 .background(BlueTitle, CircleShape)
                 .padding(dimensionResource(id = R.dimen.heart_circle))

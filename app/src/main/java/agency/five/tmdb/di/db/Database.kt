@@ -1,4 +1,6 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.di.db
+
+import agency.five.tmdb.json.Movie
 
 class Database() {
 

@@ -1,5 +1,9 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.vm
 
+import agency.five.tmdb.json.Movie
+import agency.five.tmdb.json.MovieDetailsResponse
+import agency.five.tmdb.di.api.MovieApi
+import agency.five.tmdb.di.repo.MovieRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +21,7 @@ class HomeViewModel(private val movieRepository : MovieRepository, val movieApi 
 
     suspend fun removeFromFavorites(movie : Movie) = movieRepository.removeFromFavorites(movie)
 
-    suspend fun getMovieDetails(movieId : Int) : MovieDetailsResponse = movieRepository.getMovieDetails(movieId)
+    fun getMovieDetails(movieId : Int) : Flow<MovieDetailsResponse> = movieRepository.getMovieDetails(movieId)
 
     init {
         viewModelScope.launch {

@@ -1,4 +1,4 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.json
 
 import kotlinx.serialization.Serializable
 

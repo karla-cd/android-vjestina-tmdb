@@ -1,5 +1,6 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.json
 
+import agency.five.tmdb.json.Movie
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.*
 

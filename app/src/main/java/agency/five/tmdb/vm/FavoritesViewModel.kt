@@ -1,5 +1,7 @@
-package agency.five.tmdb.ui
+package agency.five.tmdb.vm
 
+import agency.five.tmdb.json.Movie
+import agency.five.tmdb.di.repo.MovieRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow

@@ -18,6 +18,7 @@ class KtorClient() {
         install(JsonFeature) {
             serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
                 ignoreUnknownKeys = true
+                coerceInputValues = true
             })
         }
         /* Ktor 2.0.1 (umjesto JsonFeature)

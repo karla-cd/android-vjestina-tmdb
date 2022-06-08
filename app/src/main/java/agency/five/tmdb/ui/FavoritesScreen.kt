@@ -1,7 +1,9 @@
 package agency.five.tmdb.ui
 
 import agency.five.tmdb.R
+import agency.five.tmdb.json.Movie
 import agency.five.tmdb.ui.theme.BlueTitle
+import agency.five.tmdb.vm.FavoritesViewModel
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,12 +21,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalMaterialApi
 @Composable
-fun FavoritesScreen(viewModel: FavoritesViewModel) {
+fun FavoritesScreen(navController : NavController, viewModel: FavoritesViewModel) {
 
     val moviesFavoriteState : State<List<Movie>> = viewModel.moviesFavorite.collectAsState(initial = emptyList())
 
@@ -43,13 +46,14 @@ fun FavoritesScreen(viewModel: FavoritesViewModel) {
                 ) }
             item { Title("Favorites") }
         }
-        MoviesGrid(viewModel = viewModel, movieItems = moviesFavoriteState.value)
+        MoviesGrid(navController = navController, viewModel = viewModel, movieItems = moviesFavoriteState.value)
     }
 }
 
 
 @Composable
 fun MovieCard(
+    navController : NavController,
     viewModel: FavoritesViewModel,
     modifier: Modifier = Modifier,
     onMovieItemClick: () -> Unit = {},
@@ -69,7 +73,8 @@ fun MovieCard(
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(
                     onClick = {
-                        Router.navigateTo(Screen.DetailsScreen)
+                        //Router.navigateTo(Screen.DetailsScreen)
+                        navController.navigate("homeScreen")
                     }
                 ),
             contentScale = ContentScale.Crop
@@ -124,6 +129,7 @@ fun FavoriteButton(viewModel : FavoritesViewModel, movie : Movie) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MoviesGrid(
+    navController : NavController,
     viewModel: FavoritesViewModel,
     movieItems: List<Movie>
 ) {
@@ -136,6 +142,7 @@ fun MoviesGrid(
         content = {
             items(movieItems) {
                 MovieCard(
+                    navController = navController,
                     viewModel = viewModel,
                     modifier = Modifier.padding(
                         horizontal = dimensionResource(id = R.dimen.horizontal_spacing),
